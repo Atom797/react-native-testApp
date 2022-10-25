@@ -1,20 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import {Text, View,} from 'react-native';
+import { FeedMenu } from './components/FeedMenu';
+import { Header } from './components/Header';
+import styled from 'styled-components/native'
+import { MessageLog } from './components/MessageLog';
+
+const MainView = styled.View`
+  flex:1;
+  background-color: #dfdfdf;
+`
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <MainView >
+      <Header/>
+      <FeedMenu/>
+      <MessageLog/>
+      <StatusBar theme="auto" />
+    </MainView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
