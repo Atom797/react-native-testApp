@@ -1,6 +1,7 @@
 import styled from 'styled-components/native'
 import { Text, View, } from 'react-native';
 
+
 const FeedMenuView = styled.View`
     display: flex;
     flex-direction: row;
@@ -18,7 +19,7 @@ export const FeedMenu = () => {
         <View>
             <FeedMenuView>
             </FeedMenuView>
-            
+
         </View>
     )
 }

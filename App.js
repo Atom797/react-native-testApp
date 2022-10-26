@@ -1,9 +1,12 @@
+import store from './redux/redux-store'
+import { Provider } from 'react-redux';
 import { StatusBar } from 'expo-status-bar';
-import {Text, View,} from 'react-native';
+import { Text, View, } from 'react-native';
 import { FeedMenu } from './components/FeedMenu';
 import { Header } from './components/Header';
 import styled from 'styled-components/native'
 import { MessageLog } from './components/MessageLog';
+import { OrderList } from './components/OrderList';
 
 const MainView = styled.View`
   flex:1;
@@ -12,12 +15,15 @@ const MainView = styled.View`
 
 export default function App() {
   return (
-    <MainView >
-      <Header/>
-      <FeedMenu/>
-      <MessageLog/>
-      <StatusBar theme="auto" />
-    </MainView>
+    <Provider store={store}>
+      <MainView >
+        <Header />
+        <FeedMenu />
+        <MessageLog />
+        <OrderList />
+        <StatusBar theme="auto" />
+      </MainView>
+    </Provider>
   );
 }
 

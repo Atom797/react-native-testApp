@@ -1,8 +1,14 @@
 import { Text, View, } from 'react-native';
 import styled from 'styled-components/native'
 
+import { useState, useEffect } from "react"
+import { FlatList } from 'react-native-web';
+import { useDispatch, useSelector } from 'react-redux';
+import { getMessagesFetch } from '../redux/messagesReducer'
+import { Preloader } from './common/Preloader/Preloader';
+
 const MessageLogView = styled.View`
-    flex:1;
+    height: 40%;
     border-radius: 20px;
 `
 
@@ -15,15 +21,15 @@ const HeaderView = styled.View`
     background-color: #f3f3f3;
 `
 
-const Body = styled.View`
+const Body = styled.FlatList`
     flex:1;
     background-color: white;
     height: 10px;
 `
 
-const Message = styled.View`
+const MessageView = styled.View`
     display: flex;
-    height: 10%;
+    height: 55px;
     border-bottom-width: 3px;
     border-bottom-color: rgba(0, 0, 0, 0.1);
     border-bottom-style: solid;
@@ -31,43 +37,64 @@ const Message = styled.View`
     justify-content: space-between;
 `
 
-const messages = [{
-    "id": 0,
-    "number": 0,
-    "date": "10.11.15 09:25",
-    "status": "Отказ оплаты поездки"
-},
-{
-    "id": 1,
-    "number": 1,
-    "date": "10.11.15 09:25",
-    "status": "Отмена оплаты пассажиром"
-},]
 
-let arrayMessages = messages.map(el => {
-    return(<Message>
-        <View style={{display:'flex', flexDirection: 'column', width:"50%", justifyContent: "flex-start"}}>
-            <Text>id:{el.id}</Text>
-            <Text>number:{el.number}</Text>
-        </View>
 
-        <View style={{display:'flex', flexDirection: 'column', width:"50%", justifyContent: "flex-start"}}>
-            <Text>date:{el.date}</Text>
-            <Text>status:{el.status}</Text>
-        </View>
-    </Message>)
-    
-})
+export const MessageLog = () => {
 
-export const MessageLog =() =>{
-    return(
+    const onScrolltoEnd = (e) => {
+        if (e.target.scrollHeight === Math.round(e.target.scrollTop + e.target.clientHeight)) {
+            if (!error) setLoading(true);
+        }
+    }
+
+    let messageArray = useSelector(state => state.messageReducer.messageArray)
+
+    const dispatch = useDispatch();
+
+    const [isLoading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(0);
+
+    useEffect(() => {
+        if (isLoading) {
+            setTimeout(() => {
+                dispatch(getMessagesFetch(currentPage)).then((res) => {
+                    if (res !== "Error") {
+                        setLoading(false)
+                        setCurrentPage(currentPage + 1);
+                    } else {
+                        setLoading(false)
+                    }
+                });
+            }, 3000)
+        }
+    }, [isLoading])
+
+
+
+    return (
         <MessageLogView>
             <HeaderView>
                 <Text>Журнал сообщений</Text>
             </HeaderView>
-            <Body>
-                {arrayMessages}
-            </Body>
+            {isLoading ? <Preloader /> :
+                <Body data={messageArray} renderItem={({ item }) => <Message id={item.id} date={item.date} status={item.status} number={item.number} />} onScroll={onScrolltoEnd} />
+            }
         </MessageLogView>
+    )
+}
+
+const Message = (props) => {
+    return (
+        <MessageView>
+            <View style={{ display: 'flex', flexDirection: 'column', width: "50%", justifyContent: "flex-start" }}>
+                <Text>id:{props.id}</Text>
+                <Text>number:{props.number}</Text>
+            </View>
+
+            <View style={{ display: 'flex', flexDirection: 'column', width: "50%", justifyContent: "flex-start" }}>
+                <Text>date:{props.date}</Text>
+                <Text>status:{props.status}</Text>
+            </View>
+        </MessageView>
     )
 }
