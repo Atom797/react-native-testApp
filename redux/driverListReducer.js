@@ -76,7 +76,7 @@ export const getDrivers = (currentPage) => {
   return async (dispatch) => {
     const response = await driversApi.getDrivers(currentPage)
     if (response !== null) {
-      dispatch(getDriversAC(response.drivers.slice(currentPage * 20, currentPage * 20 + 20)));
+      dispatch(getDriversAC(response.drivers));
     }
   }
 }

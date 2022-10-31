@@ -8,7 +8,7 @@ import { getMessagesFetch } from '../redux/messagesReducer'
 import { Preloader } from './common/Preloader/Preloader';
 
 const MessageLogView = styled.View`
-    height: 40%;
+    height: 30%;
     border-radius: 20px;
 `
 

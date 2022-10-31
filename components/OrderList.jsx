@@ -1,4 +1,4 @@
-import { Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import styled from 'styled-components/native'
 import { Preloader } from './common/Preloader/Preloader';
 import { useState, useEffect } from "react"
@@ -8,23 +8,24 @@ import { getOrders } from '../redux/orderListReducer'
 import data from '../api/Orders.json';
 
 const OrderListView = styled.View`
-    height: 40%;
-    border-radius: 20px;
+  height: 30%;
+  border-radius: 20px;
 `
 const HeaderView = styled.View`
-    display: flex;
-    border-radius: 8px;
-    height: 7%;
-    flex-direction: row;
-    align-items: center;
-    background-color: #f3f3f3;
+  display: flex;
+  border-radius: 8px;
+  height: 7%;
+  flex-direction: row;
+  align-items: center;
+  background-color: #f3f3f3;
 `
 
 const Body = styled.View`
-    flex:1;
-    background-color: white;
-    height: 10px;
+  flex:1;
+  background-color: white;
+  height: 10px;
 `
+
 
 export const OrderList = () => {
 
@@ -34,31 +35,39 @@ export const OrderList = () => {
 
   useEffect(() => {
     if (isLoading) {
-      dispatch(getOrders(currentPage));
-      setLoading(false)
+      setTimeout(() => {
+        dispatch(getOrders(currentPage));
+        setLoading(false)
+      }, 3000)
     }
   }, [isLoading])
 
-  let columns = data.columns;
-  let arrColumns = columns.map(el => {
-    return el.dataField
+  let arrColumns = data.columns.map(el => {
+    return el.text
   })
 
-  // const z = (u) => {
-  //   let arrInformation = [];
-  //   for (let i in u) {
-  //     arrInformation.push(u.i)
-  //   }
-  //   return arrInformation
-  // }
-
   let orders = useSelector(state => state.orderListReducer.orders)
-  let arrRows = data.orders.map(el => {
-    let arrInformation = [];
-    for (let i in el) {
-      arrInformation.push(el[i])
-    }
-    return <Row data={arrInformation} />
+
+  let arrLenght = [160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160]
+
+  let arrRows = orders.map((dr, index) => {
+    return (
+      <TableWrapper key={dr.ID} style={styles.row}>
+        {<Cell data={dr.ID} style={styles.cell}></Cell>}
+        {<Cell data={dr.OrderHealth} style={styles.cell}></Cell>}
+        {<Cell data={dr.PassagNumber} style={{ width: 160, alignItems: 'center', backgroundColor: "rgb(233, 233, 233)" }}></Cell>}
+        {<Cell data={dr.PassagComment} style={styles.cell}></Cell>}
+        {<Cell data={dr.DriverID} style={styles.cell}></Cell>}
+        {<Cell data={dr.GovNumber} style={styles.cell}></Cell>}
+        {<Cell data={dr.Status} style={{ width: 160, alignItems: 'center', backgroundColor: "rgb(233, 233, 233)" }}></Cell>}
+        {<Cell data={dr.AddressFrom} style={styles.cell}></Cell>}
+        {<Cell data={dr.TimeFrom} style={{ width: 160, alignItems: 'center', backgroundColor: "rgb(233, 233, 233)" }}></Cell>}
+        {<Cell data={dr.AddressTo} style={styles.cell}></Cell>}
+        {<Cell data={dr.Other} style={styles.cell}></Cell>}
+        {<Cell data={dr.Promocode} style={styles.cell}></Cell>}
+        {<Cell data={dr.creatDate} style={styles.cell}></Cell>}
+      </TableWrapper>
+    )
   })
 
   return (
@@ -67,17 +76,24 @@ export const OrderList = () => {
         <Text>Список заказов</Text>
       </HeaderView>
       <Body>
-        <ScrollView >
-          <View>
-            <ScrollView horizontal={true}>
-              <Table>
-                <Row data={arrColumns} />
-                {arrRows}
-              </Table>
-            </ScrollView>
-          </View>
-        </ScrollView>
+        {isLoading ? <Preloader /> :
+          <ScrollView >
+            <View>
+              <ScrollView horizontal={true}>
+                <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
+                  <Row data={arrColumns} widthArr={arrLenght} textStyle={styles.text} style={{ backgroundColor: '#efefef' }} />
+                  {arrRows}
+                </Table>
+              </ScrollView>
+            </View>
+          </ScrollView>}
       </Body>
     </OrderListView>
   )
 }
+
+const styles = StyleSheet.create({
+  text: { textAlign: 'center', fontWeight: '50' },
+  row: { flexDirection: 'row' },
+  cell: { width: 160, alignItems: 'center' }
+});
